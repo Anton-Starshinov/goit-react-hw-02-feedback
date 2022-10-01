@@ -7,6 +7,7 @@ export const BtnStyled = styled.button`
   background-color: rgb(224, 224, 224);
   height: 25px;
   min-width: 100px;
+  cursor: pointer;
 `;
 
 export const BtnContein = styled.div`
