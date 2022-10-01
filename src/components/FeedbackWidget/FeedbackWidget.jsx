@@ -1,4 +1,8 @@
 import React from 'react';
+import FeedbackOptions from 'components/FeedbackOptions/FeedbackOptions';
+import Statistics from 'components/Statistics/Statistics';
+import Section from 'components/Section/Section';
+import Notification from 'components/Notification/Notification';
 
 class FeedbackWidget extends React.Component {
   state = {
@@ -7,28 +11,48 @@ class FeedbackWidget extends React.Component {
     bad: 0,
   };
 
-  onLeaveFeedback = () => {
+  onLeaveFeedback = options => {
     this.setState(prevState => ({
-      good: prevState.good + 1,
+      [options]: prevState[options] + 1,
     }));
   };
 
-  FeedbackOptions = options => {};
+  countTotalFeedback() {
+    const { good, neutral, bad } = this.state;
+    return good + neutral + bad;
+  }
+
+  countPositiveFeedbackPercentage() {
+    return Math.round((this.state.good / this.countTotalFeedback()) * 100);
+  }
 
   render() {
+    const Btn = Object.keys(this.state);
+    const { good, neutral, bad } = this.state;
+    const total = this.countTotalFeedback();
+    const precent = this.countPositiveFeedbackPercentage();
+
     return (
-      <div>
-        <h1>Please leave feedback</h1>
-        <ul></ul>
-        <div>
-          <h1>Statistics</h1>
-          <ul>
-            <li>Good:{this.state.good}</li>
-            <li>Neutral:{this.state.neutral}</li>
-            <li>Bad:{this.state.bad}</li>
-          </ul>
-        </div>
-      </div>
+      <Section title="Please leave feedback">
+        <FeedbackOptions
+          options={Btn}
+          onLeaveFeedback={this.onLeaveFeedback}
+        ></FeedbackOptions>
+
+        <Section title="Statistics">
+          {total !== 0 ? (
+            <Statistics
+              good={good}
+              neutral={neutral}
+              bad={bad}
+              total={total}
+              precent={precent}
+            />
+          ) : (
+            <Notification message="There is no feedback"></Notification>
+          )}
+        </Section>
+      </Section>
     );
   }
 }
